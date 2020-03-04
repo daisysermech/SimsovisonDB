@@ -1,0 +1,41 @@
+﻿@model IEnumerable<SimsovisionDataBase.Songs>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <h1>Песни</h1>
+
+<p>
+    <a asp-action="Create">Добавить</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SongName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SongName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duration)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdSong">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.IdSong">Перейти к участнику</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdSong">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

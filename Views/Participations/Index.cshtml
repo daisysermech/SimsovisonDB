@@ -1,0 +1,59 @@
+﻿@model IEnumerable<SimsovisionDataBase.Participations>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Учасники и их участия</h1>
+
+<p>
+    <a asp-action="Create">Добавить</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdParticipantNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdSongNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdYearOfContestNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Place)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdNominationNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdParticipantNavigation.ParticipantName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdSongNavigation.SongName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdYearOfContestNavigation.YearOfContest)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Place)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdNominationNavigation.NominationName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdParticipation">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.IdParticipation">Подробнее</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdParticipation">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

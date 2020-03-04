@@ -1,0 +1,53 @@
+﻿@model IEnumerable<SimsovisionDataBase.Years>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <h1>Года проведения</h1>
+
+<p>
+    <a asp-action="Create">Добавить</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.YearOfContest)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slogan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdHostCityNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.YearOfContest)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Slogan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdHostCityNavigation.CityName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdYearOfContest">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.IdYearOfContest">Перейти к участнику</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdYearOfContest">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
