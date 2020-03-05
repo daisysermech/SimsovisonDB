@@ -10,10 +10,10 @@ namespace SimsovisionDataBase.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChartsOneController : ControllerBase
+    public class ChartsTwoController : ControllerBase
     {
         private readonly SimsovisionDBContext _context;
-        public ChartsOneController(SimsovisionDBContext context)
+        public ChartsTwoController(SimsovisionDBContext context)
         {
             _context = context;
         }
@@ -21,14 +21,14 @@ namespace SimsovisionDataBase.Controllers
         [HttpGet("JsonData")]
         public JsonResult JsonData()
         {
-            var types = _context.ParticipantTypes.Include(p => p.Participants).ToList();
-            List<object> typeParts = new List<object>();
-            typeParts.Add(new[] { "ParticipantTypes", "Participants" });
-            foreach (var p in types)
+            var years = _context.Years.Include(p => p.Participations).ToList();
+            List<object> yearlist = new List<object>();
+            yearlist.Add(new[] { "Year", "Participants" });
+            foreach (var p in years)
             {
-                typeParts.Add(new object[] { p.ParticipantType, p.Participants.Count() });
+                yearlist.Add(new object[] { p.YearOfContest.ToString(), p.Participations.Count() });
             }
-            return new JsonResult(typeParts);
+            return new JsonResult(yearlist);
         }
     }
 }

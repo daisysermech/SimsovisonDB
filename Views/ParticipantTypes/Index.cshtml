@@ -50,10 +50,10 @@
                 data = google.visualization.arrayToDataTable(jsonData, false);
                 var option = {
                     title: "Участники и их типы",
-                    width: 500,
-                    height: 400
+                    width: 1000,
+                    height: 400,
                 };
-                chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                chart = new google.visualization.ColumnChart(document.getElementById('chart1'));
                 chart.draw(data, option);
             })
         }
