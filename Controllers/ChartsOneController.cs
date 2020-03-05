@@ -22,6 +22,7 @@ namespace SimsovisionDataBase.Controllers
         public JsonResult JsonData()
         {
             var types = _context.ParticipantTypes.Include(p => p.Participants).ToList();
+            //var types = _context.Participants.Include(p => p.IdParticipantType).ToList();
             List<object> typeParts = new List<object>();
             typeParts.Add(new[] { "ParticipantTypes", "Participants" });
             foreach (var p in types)

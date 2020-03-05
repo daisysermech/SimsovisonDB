@@ -43,10 +43,10 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLocalCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            $.get('api/Charts/JsonData', function (jsonData) {
+            $.get('api/ChartsOne/JsonData', function (jsonData) {
                 data = google.visualization.arrayToDataTable(jsonData, false);
                 var option = {
                     title: "Участники и их типы",

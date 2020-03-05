@@ -30,7 +30,7 @@ namespace SimsovisionDataBase
         [DataType(DataType.Date)]
         [Display(Name = "Дата рождения // Дата основания группы")]
         [Required(ErrorMessage = "Поле не может быть пустым.")]
-        [Remote("CheckDate","Participants",ErrorMessage = "Введенная дата не действительная.")]
+        //[Remote("CheckDate","Participants",ErrorMessage = "Введенная дата не действительная.")]
         public DateTime? ParticipantDate{ get; set; }
 
         [Display(Name = "Биография")]
