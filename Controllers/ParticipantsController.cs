@@ -176,5 +176,12 @@ namespace SimsovisionDataBase.Controllers
         {
             return _context.Participants.Any(e => e.IdParticipant == id);
         }
+
+        [HttpGet]
+        public JsonResult CheckDate(DateTime date)
+        {
+            var result = !((date <= DateTime.MinValue) || (date >= DateTime.Now));
+            return Json(result);
+        }
     }
 }
