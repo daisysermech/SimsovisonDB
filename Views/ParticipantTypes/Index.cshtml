@@ -42,20 +42,20 @@
 @section scripts{
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
-    google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLocalCallback(drawChart);
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLocalCallback(drawChart);
 
-    function drawChart() {
-        $.get('api/Charts/JsonData', function (jsonData) {
-            data = google.visualization.arrayToDataTable(jsonData, false);
-            var option = {
-                title: "Участники и их типы",
-                width: 500,
-                height: 400
-            };
-            chart = new google.visualization.PieChart(document.getElementById('chart1'));
-            chart.draw(data, option);
-        })
-    }
+        function drawChart() {
+            $.get('api/Charts/JsonData', function (jsonData) {
+                data = google.visualization.arrayToDataTable(jsonData, false);
+                var option = {
+                    title: "Участники и их типы",
+                    width: 500,
+                    height: 400
+                };
+                chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                chart.draw(data, option);
+            })
+        }
     </script>
 }

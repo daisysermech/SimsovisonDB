@@ -180,7 +180,7 @@ namespace SimsovisionDataBase.Controllers
         [HttpGet]
         public JsonResult CheckDate(DateTime date)
         {
-            var result = !((date <= DateTime.MinValue) || (date >= DateTime.Now));
+            var result = !((date.Year <= DateTime.MinValue.Year) || (date.Year >= DateTime.Now.Year));
             return Json(result);
         }
     }
