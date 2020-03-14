@@ -7,12 +7,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimsovisionDataBase.Models;
 using SimsovisionDataBase.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 namespace SimsovisionDataBase.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly SimsovisionDBContext _context;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)

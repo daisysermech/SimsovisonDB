@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SimsovisionDataBase;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimsovisionDataBase.Controllers
 {
+    [Authorize(Roles = "admin, moder, user")]
     public class CitiesController : Controller
     {
         private readonly SimsovisionDBContext _context;
@@ -44,6 +46,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Cities/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +57,7 @@ namespace SimsovisionDataBase.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("IdCity,CityName,Description")] Cities cities)
         {
             if (ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Cities/Edit/5
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +91,7 @@ namespace SimsovisionDataBase.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> Edit(int id, [Bind("IdCity,CityName,Description")] Cities cities)
         {
             if (id != cities.IdCity)
@@ -117,6 +123,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Cities/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +144,7 @@ namespace SimsovisionDataBase.Controllers
         // POST: Cities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try

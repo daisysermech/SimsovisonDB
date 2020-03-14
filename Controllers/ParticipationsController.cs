@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SimsovisionDataBase;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimsovisionDataBase.Controllers
 {
+    [Authorize(Roles = "admin, moder, user")]
     public class ParticipationsController : Controller
     {
         private readonly SimsovisionDBContext _context;
@@ -84,6 +86,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Participations/Create
+        [Authorize(Roles = "admin, moder")]
         public IActionResult Create()
         {
             ViewData["IdNomination"] = new SelectList(_context.Nominations, "IdNomination", "NominationName");
@@ -98,6 +101,7 @@ namespace SimsovisionDataBase.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> Create([Bind("IdParticipation,IdYearOfContest,IdParticipant,IdSong,IdNomination,Place")] Participations participations)
         {
             if (ModelState.IsValid)
@@ -114,6 +118,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Participations/Edit/5
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -138,6 +143,7 @@ namespace SimsovisionDataBase.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> Edit(int id, [Bind("IdParticipation,IdYearOfContest,IdParticipant,IdSong,IdNomination,Place")] Participations participations)
         {
             if (id != participations.IdParticipation)
@@ -173,6 +179,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Participations/Delete/5
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -197,6 +204,7 @@ namespace SimsovisionDataBase.Controllers
         // POST: Participations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, moder")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
