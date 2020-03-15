@@ -26,6 +26,8 @@ namespace SimsovisionDataBase
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IUserValidator<User>, CustomUserValidator>();
+
             string connections = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SimsovisionDBContext>(options => options.UseSqlServer(connections));
             services.AddControllersWithViews();
@@ -34,7 +36,16 @@ namespace SimsovisionDataBase
             services.AddDbContext<IdentityContext> (options => options.UseSqlServer(connectionIdentity));
             services.AddControllersWithViews();
 
-            services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
+            //services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
+            services.AddIdentity<User, IdentityRole>(opts => {
+                opts.Password.RequiredLength = 6;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireDigit = true;
+                opts.User.RequireUniqueEmail = true;
+                opts.User.AllowedUserNameCharacters = ".@abcdefghijklmnopqrstuvwxyz0123456789";
+            }).AddEntityFrameworkStores<IdentityContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

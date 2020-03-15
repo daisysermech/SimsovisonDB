@@ -20,6 +20,7 @@ namespace SimsovisionDataBase.ViewModels
 
         [Required]
         [Display(Name = "Пароль")]
+        [StringLength(100, ErrorMessage = "Поле {0} должно иметь минимум {2} и максимум {1} символов.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
