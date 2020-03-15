@@ -7,7 +7,8 @@
 <h1>Года проведения</h1>
 
 <p>
-    <a asp-action="Create">Добавить</a>
+    @if ((User.IsInRole("admin")))
+    {<a asp-action="Create">Добавить</a>}
 </p>
 <table class="table">
     <thead>
@@ -44,9 +45,11 @@
                     @Html.DisplayFor(modelItem => item.IdHostCityNavigation.CityName)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdYearOfContest">Редактировать</a> |
+                    @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+                    {<a asp-action="Edit" asp-route-id="@item.IdYearOfContest">Редактировать</a>}|
                     <a asp-action="Details" asp-route-id="@item.IdYearOfContest">Перейти к участнику</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdYearOfContest">Удалить</a>
+                    @if ((User.IsInRole("admin")))
+                    {<a asp-action="Delete" asp-route-id="@item.IdYearOfContest">Удалить</a>}
                 </td>
             </tr>
         }

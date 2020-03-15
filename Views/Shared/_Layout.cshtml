@@ -40,10 +40,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Nominations" asp-action="Index">Номинации</a>
                         </li>
 
-                        @if ((User.IsInRole("admin")))
+                        @if ((User.IsInRole("admin"))||(User.IsInRole("moder")))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="DEBUG" asp-action="Index">ОТЛАДКА АДМИНИСТРАТОРА</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DEBUG" asp-action="Index">ОТЛАДКА</a>
                             </li>
                         }
                     </ul>

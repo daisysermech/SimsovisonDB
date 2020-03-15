@@ -6,9 +6,10 @@
 
     <h1>Города-участники</h1>
 
-<p>
-    <a asp-action="Create">Добавить</a>
-</p>
+    <p>
+        @if (User.IsInRole("admin"))
+        {<a asp-action="Create">Добавить</a>}
+    </p>
 <table class="table">
     <thead>
         <tr>
@@ -31,9 +32,11 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCity">Редактировать</a> |
+                @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+                {<a asp-action="Edit" asp-route-id="@item.IdCity">Редактировать</a>}|
                 <a asp-action="Details" asp-route-id="@item.IdCity">Перейти к годам проведения</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCity">Удалить</a>
+                @if (User.IsInRole("admin"))
+                {<a asp-action="Delete" asp-route-id="@item.IdCity">Удалить</a>}
             </td>
         </tr>
 }

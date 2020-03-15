@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using SimsovisionDataBase.Models;
 using SimsovisionDataBase.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CustomIdentityApp.Controllers
 {
+    [Authorize(Roles = "admin, moder")]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;

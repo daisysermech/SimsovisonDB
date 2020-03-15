@@ -3,7 +3,8 @@
     ViewBag.Title = "Список пользователей";
 }
 
-<a asp-action="Create">Добавить пользователя</a>
+@if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+{<a asp-action="Create">Добавить пользователя</a>}
 
 <table class="table">
     <tr><th>Email</th><th>Дата рождения</th><th></th></tr>
