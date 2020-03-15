@@ -48,6 +48,7 @@ namespace SimsovisionDataBase.Controllers
                 var removedRoles = userRoles.Except(roles);
                 await _userManager.AddToRolesAsync(user, addedRoles);
                 await _userManager.RemoveFromRolesAsync(user, removedRoles);
+
                 return RedirectToAction("UserList");
             }
             return NotFound();

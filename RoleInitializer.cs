@@ -1,6 +1,8 @@
 ﻿using SimsovisionDataBase.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SimsovisionDataBase
 {
@@ -28,7 +30,9 @@ namespace SimsovisionDataBase
                 User admin = new User { Email = adminEmail, UserName = adminEmail };
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
+                {
                     await userManager.AddToRoleAsync(admin, "admin");
+                }
             }
 
             if (await userManager.FindByNameAsync(moderEmail) == null)
@@ -36,10 +40,10 @@ namespace SimsovisionDataBase
                 User moder = new User { Email = moderEmail, UserName = moderEmail };
                 IdentityResult result = await userManager.CreateAsync(moder, moderpassword);
                 if (result.Succeeded)
+                {
                     await userManager.AddToRoleAsync(moder, "moder");
+                }
             }
-
-
         }
     }
 }

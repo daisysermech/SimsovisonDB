@@ -33,12 +33,12 @@ namespace SimsovisionDataBase.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
-
             {
                 User user = new User { Email = model.Email, UserName = model.Email, DateofBirth = model.DateofBirth };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "user");
                     await _signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -93,6 +93,10 @@ namespace SimsovisionDataBase.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+        public ActionResult Denied()
+        {
+            return View();
         }
     }
 }

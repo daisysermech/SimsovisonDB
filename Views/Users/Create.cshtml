@@ -1,0 +1,25 @@
+﻿@model SimsovisionDataBase.ViewModels.CreateUserViewModel
+@{
+    ViewBag.Title = "Добавление пользователя";
+}
+    <form asp-action="Create" asp-controller="Users">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div>
+            <label asp-for="Email"></label><br />
+            <input asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div>
+            <label asp-for="Password"></label><br />
+            <input asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div>
+            <label asp-for="DateofBirth"></label><br />
+            <input asp-for="DateofBirth" />
+            <span asp-validation-for="DateofBirth"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Добавить" class="btn btn-outline-secondary" />
+        </div>
+    </form>
