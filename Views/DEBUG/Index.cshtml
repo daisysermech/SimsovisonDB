@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+    <div class="text-center">
+        <h1>ОТЛАДКА</h1>
+        <h1>
+            @Html.ActionLink("ПОЛЬЗОВАТЕЛИ", "Index", "Users")
+        </h1>
+        @if ((User.IsInRole("admin")))
+        {<h1>
+                @Html.ActionLink("РОЛИ", "Index", "Roles")
+            </h1>}
+    </div>
