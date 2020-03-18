@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SimsovisionDataBase;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using ClosedXML.Excel;
 
 namespace SimsovisionDataBase.Controllers
 {
@@ -21,7 +24,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Participations
-        public async Task<IActionResult> Index(int? part_id, int? nom_id, int? song_id, int? year_id,int? city_id)
+        public async Task<IActionResult> Index(int? part_id, int? nom_id, int? song_id, int? year_id)
         {
             if (part_id != null)
             {
@@ -51,14 +54,6 @@ namespace SimsovisionDataBase.Controllers
                 var simsovisionDBContext1 = _context.Participations.Where(p => p.IdYearOfContest == year_id).Include(p => p.IdNominationNavigation).Include(p => p.IdParticipantNavigation).Include(p => p.IdSongNavigation).Include(p => p.IdYearOfContestNavigation);
                 return View(await simsovisionDBContext1.ToListAsync());
             }
-            /*if (city_id != null)
-            {
-                //ViewBag.IdNomination = nom_id;
-                //ViewBag.Nomination = nom_name;
-                var simsovisionDBContext1 = _context.Participations.Where(p => p.IdParticipant == city_id).Include(p => p.IdNominationNavigation).Include(p => p.IdParticipantNavigation).Include(p => p.IdSongNavigation).Include(p => p.IdYearOfContestNavigation);
-                return View(await simsovisionDBContext1.ToListAsync());
-            }*/
-
             var simsovisionDBContext = _context.Participations.Include(p => p.IdNominationNavigation).Include(p => p.IdParticipantNavigation).Include(p => p.IdSongNavigation).Include(p => p.IdYearOfContestNavigation);
             return View(await simsovisionDBContext.ToListAsync());
         }
@@ -223,6 +218,92 @@ namespace SimsovisionDataBase.Controllers
         private bool ParticipationsExists(int id)
         {
             return _context.Participations.Any(e => e.IdParticipation == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Import(IFormFile fileExcel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (fileExcel != null)
+                {
+                    using (var stream = new FileStream(fileExcel.FileName, FileMode.Create))
+                    {
+                        await fileExcel.CopyToAsync(stream);
+                        using (XLWorkbook workBook = new XLWorkbook(stream, XLEventTracking.Disabled))
+                        {
+                            foreach (IXLWorksheet worksheet in workBook.Worksheets)
+                            {
+                                Participations newparts;
+                                var c = (from cat in _context.Participations
+                                         where cat.IdParticipantNavigation.ParticipantName.Contains(worksheet.Name)
+                                         select cat).ToList();
+                                if (c.Count > 0)
+                                {
+                                    newparts = c[0];
+                                }
+                                else
+                                {
+                                    newparts = new Participations();
+                                    newparts.IdParticipantNavigation.ParticipantName = worksheet.Name;
+                                    newparts.Info = "from EXCEL";
+                                    //додати в контекст
+                                    _context.Categories.Add(newparts);
+                                }
+                                //перегляд усіх рядків                    
+                                foreach (IXLRow row in worksheet.RowsUsed().Skip(1))
+                                {
+                                    try
+                                    {
+                                        Book book = new Book();
+                                        book.Name = row.Cell(1).Value.ToString();
+                                        book.Info = row.Cell(6).Value.ToString();
+                                        book.Category = newcat;
+                                        _context.Books.Add(book);
+                                        //у разі наявності автора знайти його, у разі відсутності - додати
+                                        for (int i = 2; i <= 5; i++)
+                                        {
+                                            if (row.Cell(i).Value.ToString().Length > 0)
+                                            {
+                                                Author author;
+
+                                                var a = (from aut in _context.Authors
+                                                         where aut.Name.Contains(row.Cell(i).Value.ToString())
+                                                         select aut).ToList();
+                                                if (a.Count > 0)
+                                                {
+                                                    author = a[0];
+                                                }
+                                                else
+                                                {
+                                                    author = new Author();
+                                                    author.Name = row.Cell(i).Value.ToString();
+                                                    author.Info = "from EXCEL";
+                                                    //додати в контекст
+                                                    _context.Add(author);
+                                                }
+                                                AuthorsBooks ab = new AuthorsBooks();
+                                                ab.Book = book;
+                                                ab.Author = author;
+                                                _context.AuthorsBooks.Add(ab);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        //logging самостійно :)
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -10,6 +10,7 @@
     @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
     {<a asp-action="Create">Добавить</a>}
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -32,31 +33,32 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParticipantName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParticipantDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Biography)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdParticipantTypeNavigation.ParticipantType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRepresentedCityNavigation.CityName)
-            </td>
-            <td>
-                @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
-                {<a asp-action="Edit" asp-route-id="@item.IdParticipant">Редактировать</a>} |
-                <a asp-action="Details" asp-route-id="@item.IdParticipant">Перейти к участиям</a> |
-                @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
-                {<a asp-action="Delete" asp-route-id="@item.IdParticipant">Удалить</a>}
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParticipantName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParticipantDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Biography)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdParticipantTypeNavigation.ParticipantType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdRepresentedCityNavigation.CityName)
+                </td>
+                <td>
+                    @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+                    {<a asp-action="Edit" asp-route-id="@item.IdParticipant">Редактировать</a>} |
+                    <a asp-action="Details" asp-route-id="@item.IdParticipant">Перейти к участиям</a> |
+                    @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+                    {<a asp-action="Delete" asp-route-id="@item.IdParticipant">Удалить</a>}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

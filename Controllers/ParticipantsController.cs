@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SimsovisionDataBase;
 using Microsoft.AspNetCore.Authorization;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace SimsovisionDataBase.Controllers
 {

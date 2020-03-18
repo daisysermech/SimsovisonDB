@@ -10,6 +10,26 @@
     @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
     {<a asp-action="Create">Добавить</a>}
 </p>
+
+<div>
+    <h3>Выберите файл .xls или .xlsx для загрузки.</h3>
+    @using (Html.BeginForm("Import", "Participantions", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Открыть:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Открыть" />
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <h3>Сохранение в файл.</h3>
+    <a asp-action="Export">Сохранить</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -32,31 +52,32 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdParticipantNavigation.ParticipantName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdSongNavigation.SongName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdYearOfContestNavigation.YearOfContest)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Place)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdNominationNavigation.NominationName)
-            </td>
-            <td>
-                @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
-                {<a asp-action="Edit" asp-route-id="@item.IdParticipation">Редактировать</a>} |
-                <a asp-action="Details" asp-route-id="@item.IdParticipation">Подробнее</a> |
-                @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
-                {<a asp-action="Delete" asp-route-id="@item.IdParticipation">Удалить</a>}
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdParticipantNavigation.ParticipantName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdSongNavigation.SongName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdYearOfContestNavigation.YearOfContest)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Place)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdNominationNavigation.NominationName)
+                </td>
+                <td>
+                    @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+                    {<a asp-action="Edit" asp-route-id="@item.IdParticipation">Редактировать</a>} |
+                    <a asp-action="Details" asp-route-id="@item.IdParticipation">Подробнее</a> |
+                    @if ((User.IsInRole("admin")) || (User.IsInRole("moder")))
+                    {<a asp-action="Delete" asp-route-id="@item.IdParticipation">Удалить</a>}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
