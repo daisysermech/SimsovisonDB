@@ -168,5 +168,121 @@ namespace SimsovisionDataBase.Controllers
         {
             return _context.ParticipantTypes.Any(e => e.IdParticipantType == id);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Import(IFormFile fileExcel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (fileExcel != null)
+                {
+                    using (var stream = new FileStream(fileExcel.FileName, FileMode.Create))
+                    {
+                        await fileExcel.CopyToAsync(stream);
+                        using (XLWorkbook workBook = new XLWorkbook(stream, XLEventTracking.Disabled))
+                        {
+                            foreach (IXLWorksheet worksheet in workBook.Worksheets)
+                            {
+                                ParticipantTypes newtype;
+                                var t = (from type in _context.ParticipantTypes where type.ParticipantType.Contains(worksheet.Name) select type).ToList();
+                                if (t.Count > 0)
+                                    newtype = t[0];
+
+                                else
+                                {
+                                    newtype = new ParticipantTypes();
+                                    newtype.ParticipantType = worksheet.Name;
+                                    _context.ParticipantTypes.Add(newtype);
+                                }
+                                //перегляд усіх рядків                    
+                                foreach (IXLRow row in worksheet.RowsUsed().Skip(1))
+                                {
+                                    try
+                                    {
+                                        //участник
+                                        Participants participant = new Participants();
+                                        participant.ParticipantName = row.Cell(1).Value.ToString();
+                                        //participant.ParticipantDate = Convert.ToDateTime(row.Cell(2).Value.ToString());
+                                        participant.ParticipantDate = DateTime.Now;
+                                        participant.Biography = row.Cell(3).Value.ToString();
+
+                                        //участник -> город
+                                        Cities newcity;
+                                        var c = (from city in _context.Cities where city.CityName.Contains(row.Cell(4).Value.ToString()) select city).ToList();
+                                        if (c.Count > 0)
+                                            newcity = c[0];
+                                        else
+                                        {
+                                            newcity = new Cities();
+                                            newcity.CityName = row.Cell(4).Value.ToString();
+                                            newcity.Description = "Imported from file.";
+                                            _context.Cities.Add(newcity);
+                                        }
+
+                                        participant.IdRepresentedCityNavigation = newcity;
+                                        participant.IdParticipantTypeNavigation = newtype;
+                                        _context.Participants.Add(participant);
+
+                                        //песня
+                                        Songs song = new Songs();
+                                        song.SongName = row.Cell(5).Value.ToString();
+                                        //song.Duration = TimeSpan.Parse(row.Cell(6).Value.ToString());
+                                        song.Duration = TimeSpan.Zero;
+                                        _context.Songs.Add(song);
+
+                                        //участие
+                                        Participations participation = new Participations();
+                                        participation.IdParticipantNavigation = participant;
+                                        participation.IdSongNavigation = song;
+
+                                        //участие -> год
+                                        Years newyear;
+                                        var y = (from year in _context.Years where year.IdYearOfContest==Convert.ToInt32(row.Cell(7).Value) select year).ToList();
+                                        if (y.Count > 0)
+                                            newyear = y[0];
+                                        else
+                                        {
+                                            newyear = new Years();
+                                            newyear.YearOfContest = Convert.ToInt32(row.Cell(7).Value);
+                                            newyear.Slogan = "Slogan";
+                                            newyear.Stage = "Stage";
+                                            newyear.IdHostCityNavigation = _context.Cities.ToList()[5];
+                                            _context.Years.Add(newyear);
+                                        }
+
+                                        //участие -> номинация
+                                        Nominations newnomination;
+                                        var n = (from nomination in _context.Nominations where nomination.NominationName.Contains(row.Cell(8).Value.ToString()) select nomination).ToList();
+                                        if (n.Count > 0)
+                                            newnomination = n[0];
+                                        else
+                                        {
+                                            newnomination = new Nominations();
+                                            newnomination.NominationName = row.Cell(8).Value.ToString();
+                                            _context.Nominations.Add(newnomination);
+                                        }
+
+                                        participation.IdYearOfContestNavigation = newyear;
+                                        participation.IdNominationNavigation = newnomination;
+                                        participation.Place = Convert.ToInt32(row.Cell(9).Value);
+
+                                        _context.Participations.Add(participation);
+                                    }
+                                    catch
+                                    {
+                                        RedirectToAction("ErrorOpen", "Home");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

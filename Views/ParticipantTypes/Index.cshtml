@@ -39,6 +39,25 @@
     </tbody>
 </table>
 
+<div>
+    <h3>Выберите файл .xls или .xlsx для загрузки.</h3>
+    @using (Html.BeginForm("Import", "ParticipantTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Открыть:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Открыть" />
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <h3>Сохранение в файл.</h3>
+    <a asp-action="Export">Сохранить</a>
+</div>
+
 <div class="container">
     <div id="chart1"></div>
 </div>
