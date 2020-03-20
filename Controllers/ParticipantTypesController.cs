@@ -203,8 +203,7 @@ namespace SimsovisionDataBase.Controllers
                                         //участник
                                         Participants participant = new Participants();
                                         participant.ParticipantName = row.Cell(1).Value.ToString();
-                                        //participant.ParticipantDate = Convert.ToDateTime(row.Cell(2).Value.ToString());
-                                        participant.ParticipantDate = DateTime.Now;
+                                        participant.ParticipantDate = Convert.ToDateTime(row.Cell(2).Value.ToString());
                                         participant.Biography = row.Cell(3).Value.ToString();
 
                                         //участник -> город
@@ -227,8 +226,12 @@ namespace SimsovisionDataBase.Controllers
                                         //песня
                                         Songs song = new Songs();
                                         song.SongName = row.Cell(5).Value.ToString();
-                                        //song.Duration = TimeSpan.Parse(row.Cell(6).Value.ToString());
-                                        song.Duration = TimeSpan.Zero;
+
+                                        string myString = row.Cell(6).Value.ToString();
+                                        double d = double.Parse(myString);
+                                        DateTime dt = DateTime.FromOADate(d);
+                                        song.Duration = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
+
                                         _context.Songs.Add(song);
 
                                         //участие
@@ -238,7 +241,7 @@ namespace SimsovisionDataBase.Controllers
 
                                         //участие -> год
                                         Years newyear;
-                                        var y = (from year in _context.Years where year.IdYearOfContest==Convert.ToInt32(row.Cell(7).Value) select year).ToList();
+                                        var y = (from year in _context.Years where year.YearOfContest == int.Parse(row.Cell(7).Value.ToString()) select year).ToList();
                                         if (y.Count > 0)
                                             newyear = y[0];
                                         else
@@ -247,7 +250,7 @@ namespace SimsovisionDataBase.Controllers
                                             newyear.YearOfContest = Convert.ToInt32(row.Cell(7).Value);
                                             newyear.Slogan = "Slogan";
                                             newyear.Stage = "Stage";
-                                            newyear.IdHostCityNavigation = _context.Cities.ToList()[5];
+                                            newyear.IdHostCityNavigation = _context.Cities.ToList()[1004];
                                             _context.Years.Add(newyear);
                                         }
 
