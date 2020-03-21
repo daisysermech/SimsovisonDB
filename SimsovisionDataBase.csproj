@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <None Remove="SVDB file.xlsx" />
+    <None Remove="video-clip.m4v" />
     <None Remove="Книга1.xls" />
   </ItemGroup>
 

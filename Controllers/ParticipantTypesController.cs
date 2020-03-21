@@ -207,75 +207,97 @@ namespace SimsovisionDataBase.Controllers
                                     {
                                         //участник
                                         Participants participant = new Participants();
-                                        participant.ParticipantName = row.Cell(1).Value.ToString();
-                                        participant.ParticipantDate = Convert.ToDateTime(row.Cell(2).Value.ToString());
-                                        participant.Biography = row.Cell(3).Value.ToString();
-
-                                        //участник -> город
-                                        Cities newcity;
-                                        var c = (from city in _context.Cities where city.CityName.Contains(row.Cell(4).Value.ToString()) select city).ToList();
-                                        if (c.Count > 0)
-                                            newcity = c[0];
+                                        var p = (from part in _context.Participants where part.ParticipantName== row.Cell(1).Value.ToString() select part).ToList();
+                                        if (p.Count > 0)
+                                            participant = p[0];
                                         else
                                         {
-                                            newcity = new Cities();
-                                            newcity.CityName = row.Cell(4).Value.ToString();
-                                            newcity.Description = "Imported from file.";
-                                            _context.Cities.Add(newcity);
+                                            participant.ParticipantName = row.Cell(1).Value.ToString();
+                                            participant.ParticipantDate = Convert.ToDateTime(row.Cell(2).Value.ToString());
+                                            participant.Biography = row.Cell(3).Value.ToString();
+
+                                            //участник -> город
+                                            Cities newcity;
+                                            var c = (from city in _context.Cities where city.CityName.Contains(row.Cell(4).Value.ToString()) select city).ToList();
+                                            if (c.Count > 0)
+                                                newcity = c[0];
+                                            else
+                                            {
+                                                newcity = new Cities();
+                                                newcity.CityName = row.Cell(4).Value.ToString();
+                                                newcity.Description = "Imported from file.";
+                                                _context.Cities.Add(newcity);
+                                            }
+
+                                            participant.IdRepresentedCityNavigation = newcity;
+                                            participant.IdParticipantTypeNavigation = newtype;
+                                            _context.Participants.Add(participant);
                                         }
-
-                                        participant.IdRepresentedCityNavigation = newcity;
-                                        participant.IdParticipantTypeNavigation = newtype;
-                                        _context.Participants.Add(participant);
-
-                                        //песня
-                                        Songs song = new Songs();
-                                        song.SongName = row.Cell(5).Value.ToString();
-
-                                        string myString = row.Cell(6).Value.ToString();
-                                        double d = double.Parse(myString);
-                                        DateTime dt = DateTime.FromOADate(d);
-                                        song.Duration = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
-
-                                        _context.Songs.Add(song);
 
                                         //участие
                                         Participations participation = new Participations();
-                                        participation.IdParticipantNavigation = participant;
-                                        participation.IdSongNavigation = song;
-
-                                        //участие -> год
-                                        Years newyear;
-                                        var y = (from year in _context.Years where year.YearOfContest == int.Parse(row.Cell(7).Value.ToString()) select year).ToList();
-                                        if (y.Count > 0)
-                                            newyear = y[0];
+                                        var pt = (from parts in _context.Participations where parts.IdParticipantNavigation.ParticipantName == row.Cell(1).Value.ToString() select parts).ToList();
+                                        if (pt.Count > 0)
+                                            participation = pt[0];
                                         else
                                         {
-                                            newyear = new Years();
-                                            newyear.YearOfContest = Convert.ToInt32(row.Cell(7).Value);
-                                            newyear.Slogan = "Slogan";
-                                            newyear.Stage = "Stage";
-                                            newyear.IdHostCityNavigation = _context.Cities.ToList()[1004];
-                                            _context.Years.Add(newyear);
+
+                                            //песня
+                                            Songs song = new Songs();
+                                            var s = (from songs in _context.Songs where song.SongName == row.Cell(5).Value.ToString() select songs).ToList();
+                                            if (s.Count > 0)
+                                                song = s[0];
+                                            else
+                                            {
+                                                song.SongName = row.Cell(5).Value.ToString();
+                                                string myString = row.Cell(6).Value.ToString();
+                                                double d = double.Parse(myString);
+                                                DateTime dt = DateTime.FromOADate(d);
+                                                song.Duration = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
+                                                _context.Songs.Add(song);
+                                            }
+
+                                            //участие -> год
+                                            Years newyear;
+                                            var y = (from year in _context.Years where year.YearOfContest == int.Parse(row.Cell(7).Value.ToString()) select year).ToList();
+                                            if (y.Count > 0)
+                                                newyear = y[0];
+                                            else
+                                            {
+                                                newyear = new Years();
+                                                newyear.YearOfContest = Convert.ToInt32(row.Cell(7).Value);
+                                                newyear.Slogan = "Slogan";
+                                                newyear.Stage = "Stage";
+                                                foreach (var city in _context.Cities)
+                                                    if (city.CityName == "POLIGON")
+                                                    {
+                                                        newyear.IdHostCityNavigation = city;
+                                                        break;
+                                                    }
+                                                _context.Years.Add(newyear);
+                                            }
+
+                                            //участие -> номинация
+                                            Nominations newnomination;
+                                            var n = (from nomination in _context.Nominations where nomination.NominationName.Contains(row.Cell(8).Value.ToString()) select nomination).ToList();
+                                            if (n.Count > 0)
+                                                newnomination = n[0];
+                                            else
+                                            {
+                                                newnomination = new Nominations();
+                                                newnomination.NominationName = row.Cell(8).Value.ToString();
+                                                _context.Nominations.Add(newnomination);
+                                            }
+
+
+                                            participation.IdParticipantNavigation = participant;
+                                            participation.IdSongNavigation = song;
+                                            participation.IdYearOfContestNavigation = newyear;
+                                            participation.IdNominationNavigation = newnomination;
+                                            participation.Place = Convert.ToInt32(row.Cell(9).Value);
+
+                                            _context.Participations.Add(participation);
                                         }
-
-                                        //участие -> номинация
-                                        Nominations newnomination;
-                                        var n = (from nomination in _context.Nominations where nomination.NominationName.Contains(row.Cell(8).Value.ToString()) select nomination).ToList();
-                                        if (n.Count > 0)
-                                            newnomination = n[0];
-                                        else
-                                        {
-                                            newnomination = new Nominations();
-                                            newnomination.NominationName = row.Cell(8).Value.ToString();
-                                            _context.Nominations.Add(newnomination);
-                                        }
-
-                                        participation.IdYearOfContestNavigation = newyear;
-                                        participation.IdNominationNavigation = newnomination;
-                                        participation.Place = Convert.ToInt32(row.Cell(9).Value);
-
-                                        _context.Participations.Add(participation);
                                     }
                                     catch
                                     {
