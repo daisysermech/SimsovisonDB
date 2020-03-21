@@ -23,7 +23,7 @@ namespace SimsovisionDataBase.Controllers
         }
 
         // GET: Participants
-        public async Task<IActionResult> Index(int? id, string? type)
+        public async Task<IActionResult> Index(int? id)
         {
             if (id == null)
             {

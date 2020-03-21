@@ -28,6 +28,11 @@ namespace SimsovisionDataBase.Controllers
         {
             return View(await _context.ParticipantTypes.ToListAsync());
         }
+        [HttpPost]
+        public string ReturnTypes(string type)
+        {
+            return type;
+        }
 
         // GET: ParticipantTypes/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -334,7 +339,7 @@ namespace SimsovisionDataBase.Controllers
                     }
                 }
 
-            using (var stream = new MemoryStream())
+                using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
                     stream.Flush();
