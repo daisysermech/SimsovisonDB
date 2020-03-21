@@ -287,5 +287,65 @@ namespace SimsovisionDataBase.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public ActionResult Export()
+        {
+            using (XLWorkbook workbook = new XLWorkbook(XLEventTracking.Disabled))
+            {
+                var part_types = _context.ParticipantTypes.Include("Participants").ToList();
+
+                foreach (var p in part_types)
+                {
+                    var worksheet = workbook.Worksheets.Add(p.ParticipantType);
+                    worksheet.Cell("A1").Value = "Имя участника";
+                    worksheet.Cell("B1").Value = "Дата рождения/создания";
+                    worksheet.Cell("C1").Value = "Биография";
+                    worksheet.Cell("D1").Value = "Город";
+                    worksheet.Cell("E1").Value = "Песня";
+                    worksheet.Cell("F1").Value = "Длительность";
+                    worksheet.Cell("G1").Value = "Год участия";
+                    worksheet.Cell("H1").Value = "Номинация";
+                    worksheet.Cell("I1").Value = "Место";
+                    worksheet.Row(1).Style.Font.Bold = true;
+                    var participants = p.Participants.ToList();
+
+                    for (int i = 0; i < participants.Count; i++)
+                    {
+                        worksheet.Cell(i + 2, 1).Value = participants[i].ParticipantName;
+                        worksheet.Cell(i + 2, 2).Value = participants[i].ParticipantDate;
+                        worksheet.Cell(i + 2, 3).Value = participants[i].Biography;
+                        var cities = (from city in _context.Cities where city.IdCity == participants[i].IdRepresentedCity select city).ToList();
+                        worksheet.Cell(i + 2, 4).Value = cities[0].CityName;
+
+
+                        var participations = (from parts in _context.Participations where parts.IdParticipant == participants[i].IdParticipant select parts).ToList();
+
+                        var songs = (from song in _context.Songs where participations[0].IdSong == song.IdSong select song).ToList();
+                        var years = (from year in _context.Years where participations[0].IdYearOfContest == year.IdYearOfContest select year).ToList();
+                        var nominations = (from nomination in _context.Nominations where nomination.IdNomination == participations[0].IdNomination select nomination).ToList();
+
+                        worksheet.Cell(i + 2, 5).Value = songs[0].SongName;
+                        worksheet.Cell(i + 2, 6).Value = songs[0].Duration;
+
+                        worksheet.Cell(i + 2, 7).Value = years[0].YearOfContest;
+
+                        worksheet.Cell(i + 2, 8).Value = nominations[0].NominationName;
+
+                        worksheet.Cell(i + 2, 9).Value = participations[0].Place;
+                    }
+                }
+
+            using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Flush();
+
+                    return new FileContentResult(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    {
+                        FileDownloadName = $"library_{DateTime.UtcNow.ToShortDateString()}.xlsx"
+                    };
+                }
+            }
+        }
     }
 }
