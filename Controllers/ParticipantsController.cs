@@ -71,7 +71,7 @@ namespace SimsovisionDataBase.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin, moder")]
+        [Authorize(Roles = "admin, moder, user")]
         public async Task<IActionResult> Create([Bind("IdParticipant,ParticipantName,IdRepresentedCity,IdParticipantType,ParticipantDate,Biography")] Participants participants)
         {
             if (ModelState.IsValid)
